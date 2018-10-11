@@ -1,0 +1,90 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+file_extensions:
+  - baroc
+
+scope: source.baroc
+
+contexts:
+  main:
+    - include: class
+    - include: specialchars
+    - include: string1
+    - include: inside_string1
+    - include: string2
+    - include: inside_string2
+    - include: hex
+    - include: punctuation
+    - include: field_name
+    - include: int
+    - include: float
+    - include: constant
+    - include: list
+    - include: comment
+
+  class:
+    - match: '^([A-Za-z0-9_]+);'
+      captures: 
+        1: entity.name.tag
+
+  specialchars:
+    - match: '=|[|]'
+      scope: keyword.operator.assignment.baroc
+
+  string1:
+    - match: "'"
+      scope: punctuation.definition.string.begin.baroc
+      push: inside_string1
+
+  inside_string1:
+    - meta_include_prototype: false
+    - meta_scope: string.quoted.double.baroc
+    - match: "''"
+      scope: constant.character.escape.baroc
+    - match: "'"
+      scope: punctuation.definition.string.end.baroc
+      pop: true
+
+  string2:
+    - match: '"'
+      scope: punctuation.definition.string.begin.baroc
+      push: inside_string2
+
+  inside_string2:
+    - meta_include_prototype: false
+    - meta_scope: string.quoted.double.baroc
+    - match: "''"
+      scope: constant.character.escape.baroc
+    - match: '"'
+      scope: punctuation.definition.string.end.baroc
+      pop: true
+
+  punctuation:
+    - match: ';|,'
+      scope: punctuation.terminator.baroc
+
+  field_name:
+    - match: '\t?([A-Za-z0-9_]+)='
+      captures:
+        1: entity.other.attribute-name.baroc
+
+  int:
+    - match: '\d+'
+      scope: constant.numeric.baroc
+
+  float:
+    - match: '\d+\.\d+'
+      scope: constant.numeric.float.baroc
+
+  hex:
+    - match: '0x[0-9a-fA-F]{8}'
+      scope: constant.numeric.hex.baroc
+
+  constant:
+    - match: '[A-Za-z0-9_]+'
+      scope: variable.parameter.baroc
+
+  comment:
+    - match: '\s*#.*'
+      scope: comment.baroc
